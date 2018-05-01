@@ -7,4 +7,5 @@ something like
 ```
 NUMSUCH_HOME=$(HOME)/git/numsuch
 CHREST_HOME=$(HOME)/git/chrest
+RELCH_HOME=$(HOME)/git/Relch
 ```
