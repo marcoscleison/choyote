@@ -8,6 +8,9 @@ config const API_HOST: string,
              EPOCHS: int;
 
 class ChoyoteController: ChrestController {
+  proc Get(ref req:Request,ref res:Response) {
+    //runSim();
+  }
 
 }
 
@@ -19,11 +22,24 @@ proc main() {
 
   begin srv.Listen();
   ws.Listen();
-  for e in 1..EPOCHS {
-    writeln("I'm really tired of these Star Wars");
-  }
+  var choyoteController = new ChoyoteController();
+  srv.Routes().Get("/data", choyoteController);
 
+  runSim();
+  
   ws.Close();
   srv.Close();
 
+}
+
+record AgentDTO {
+  var x: real,
+      y: real;
+}
+
+proc runSim() {
+  for i in 1..EPOCHS {
+    var a = new AgentDTO(x=i:real / EPOCHS, y=i:real/EPOCHS);
+    chrestPubSubPublish("data", a);
+  }
 }

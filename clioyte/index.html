@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+  <title>Choyote</title>
+
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script> -->
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script>
+     //var WebSocket = WebSocket || MozWebSocket;
+     //var socket = new WebSocket('ws://127.0.0.1:8000', 'data');
+     var socket = new WebSocket('ws://127.0.0.1:8000');
+     console.log("ain't that a bitch?");
+
+     const namespace = '/data';
+     //var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+
+     var svg = d3.select("#stage").append("svg:svg");
+     svg.attr('width', 800).attr('height', 500);
+     var coyote = svg.append("circle").attr("cx", 400).attr("cy", 250).attr("r", 25).style("fill", "purple");
+     var road_runner = svg.append("circle").attr("cx", 200).attr("cy", 125).attr("r", 25).style("fill", "brown");
+
+     socket.onmessage = function(event){
+       console.log("got a message!");
+     }
+
+     /*
+     socket.on('road_runner_position', function(obj) {
+         road_runner.attr('cx', obj.xpos);
+         road_runner.attr('cy', obj.ypos);
+     });
+     socket.on('coyote_position', function(obj) {
+         //console.log(obj);
+         coyote.attr('cx', obj.xpos);
+         coyote.attr('cy', obj.ypos);
+     });
+     socket.on('episode_end', function(data){
+       svg.style("background-color", "red");
+       $('#report').append('<br>' + $('<div/>').text('Episode ' + data.episode + ' stopped at step ' + data.step).html());
+       svg.style("background-color", "transparent");
+     }) */
+  </script>
+</head>
+<body>
+  <h1>WEBSOCKETS ON A PLANE!!</h1>
+</body>
+</html>
