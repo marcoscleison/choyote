@@ -28,11 +28,12 @@ proc runWithEmissions() {
   var ws = new ChrestWebsocketServer(WS_PORT);
   srv.Routes().setServeFiles(true);
   srv.Routes().setFilePath("www");
-
-  begin srv.Listen();
-  ws.Listen();
   var choyoteController = new ChoyoteController();
   srv.Routes().Get("/data", choyoteController);
+  
+  begin srv.Listen(); //Here you run the http server in one thread
+  begin ws.Listen(); //Here you run you websocket server
+  
 
   // Now run the sim
   runSim();
@@ -74,6 +75,9 @@ proc runSim() {
   }
   for x in sim.run() {
     writeln(x);
+    //Use the function chrestPubSubPublish(channel:string,obj) to send obj parameter as json to the clients. 
+    chrestPubSubPublish("data",x); //Here you are sending data to the websocket channel "data" queue that will send them to the websocket clients.
+
   }
 }
 
