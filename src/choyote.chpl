@@ -62,8 +62,8 @@ proc runSim() {
   for i in 1..N_RABBITS {
     const randx = rand(a=0, b=WORLD_WIDTH),
           randy = rand(a=0, b=WORLD_HEIGHT);
-    var ifs:[1..1] Feature,
-        wfs:[1..1] Feature;
+    var ifs:[1..0] Feature,
+        wfs:[1..0] Feature;
     ifs.push_back(new RabbitHerdCentroid(size=7));
     wfs.push_back(new CurrentWeather(size=5));
     var a = new Agent(name="rabbit_" + i:string
