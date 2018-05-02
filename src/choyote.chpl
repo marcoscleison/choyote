@@ -30,10 +30,10 @@ proc runWithEmissions() {
   srv.Routes().setFilePath("www");
   var choyoteController = new ChoyoteController();
   srv.Routes().Get("/data", choyoteController);
-  
+
   begin srv.Listen(); //Here you run the http server in one thread
   begin ws.Listen(); //Here you run you websocket server
-  
+
 
   // Now run the sim
   runSim();
@@ -63,25 +63,25 @@ proc runSim() {
   for i in 1..N_RABBITS {
     const randx = rand(a=0, b=WORLD_WIDTH),
           randy = rand(a=0, b=WORLD_HEIGHT);
-    var ifs:[1..1] Feature,
-        wfs:[1..1] Feature;
+    var ifs:[1..1] Sensor,
+        wfs:[1..1] Sensor;
     ifs.push_back(new RabbitHerdCentroid(size=7));
     wfs.push_back(new CurrentWeather(size=5));
     var a = new Agent(name="rabbit_" + i:string
-      , internalFeatures = ifs
-      , worldFeatures = wfs
+      , internalSensors= ifs
+      , worldSensors = wfs
       , position=new Position(randx, randy));
     sim.add(a);
   }
   for x in sim.run() {
     writeln(x);
-    //Use the function chrestPubSubPublish(channel:string,obj) to send obj parameter as json to the clients. 
+    //Use the function chrestPubSubPublish(channel:string,obj) to send obj parameter as json to the clients.
     chrestPubSubPublish("data",x); //Here you are sending data to the websocket channel "data" queue that will send them to the websocket clients.
 
   }
 }
 
-class NearestRabbit : Feature {
+class NearestRabbit : Sensor {
   proc init(size:int) {
     super.init(size=size);
     this.complete();
@@ -101,7 +101,7 @@ class NearestRabbit : Feature {
   }
 }
 
-class CurrentWeather: Feature {
+class CurrentWeather: Sensor {
   proc init(size:int) {
     super.init(size=size);
     this.complete();
@@ -112,7 +112,7 @@ class CurrentWeather: Feature {
   }
 }
 
-class RabbitHerdCentroid: Feature {
+class RabbitHerdCentroid: Sensor {
   proc init(size:int) {
     super.init(size=size);
     this.complete();
