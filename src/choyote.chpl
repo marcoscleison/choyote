@@ -75,9 +75,9 @@ proc runSim() {
   }
   for x in sim.run() {
     writeln(x);
-    var y = x;
+    var ad = new AgentDTO(x=a.position.x, y= a.position.y);
     //Use the function chrestPubSubPublish(channel:string,obj) to send obj parameter as json to the clients.
-    chrestPubSubPublish("data",y); //Here you are sending data to the websocket channel "data" queue that will send them to the websocket clients.
+    chrestPubSubPublish("data",ad); //Here you are sending data to the websocket channel "data" queue that will send them to the websocket clients.
 
   }
 }
