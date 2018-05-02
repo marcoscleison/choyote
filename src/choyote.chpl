@@ -63,8 +63,8 @@ proc runSim() {
   for i in 1..N_RABBITS {
     const randx = rand(a=0, b=WORLD_WIDTH),
           randy = rand(a=0, b=WORLD_HEIGHT);
-    var ifs:[1..1] Sensor,
-        wfs:[1..1] Sensor;
+    var ifs:[1..0] Sensor,
+        wfs:[1..0] Sensor;
     ifs.push_back(new RabbitHerdCentroid(size=7));
     wfs.push_back(new CurrentWeather(size=5));
     var a = new Agent(name="rabbit_" + i:string
@@ -75,8 +75,9 @@ proc runSim() {
   }
   for x in sim.run() {
     writeln(x);
+    var y = x;
     //Use the function chrestPubSubPublish(channel:string,obj) to send obj parameter as json to the clients.
-    chrestPubSubPublish("data",x); //Here you are sending data to the websocket channel "data" queue that will send them to the websocket clients.
+    chrestPubSubPublish("data",y); //Here you are sending data to the websocket channel "data" queue that will send them to the websocket clients.
 
   }
 }
