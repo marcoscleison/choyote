@@ -1,8 +1,10 @@
-use Chrest,
-    ChrestWebsockets,
+ use ChrestWebsockets;
+  
+    ChrestWebsocketsClient,
     ChrestUtils,
     Random,
     NumSuch,
+    Time,
     Relch;
 
 config const EMIT: bool,              // Push data to the socket?
@@ -16,30 +18,32 @@ config const EMIT: bool,              // Push data to the socket?
              N_RABBITS: int,
              N_COYOTES: int;
 
-class ChoyoteController: ChrestController {
-  proc Get(ref req:Request,ref res:Response) {
-    //runSim();
-  }
+config const tasksPerLocale = 4;
 
-}
+
+ class MyDataController:WebsocketController{
+        proc init(){
+
+        }
+        proc this(cmd:WsCliCMD){
+		    //writeln("Data received ", cmd.data);
+	    }
+
+    }
+
 
 proc runWithEmissions() {
-  var srv = new Chrest(API_HOST,API_PORT);
-  var ws = new ChrestWebsocketServer(WS_PORT);
-  srv.Routes().setServeFiles(true);
-  srv.Routes().setFilePath("www");
-  var choyoteController = new ChoyoteController();
-  srv.Routes().Get("/data", choyoteController);
-
   
-  // Now run the sim
-  begin runSim();
-  
-  begin srv.Listen(); //Here you run the http server in one thread
+   var ws = new ChrestWebsocketClient(API_HOST, WS_PORT);   
+   ws.Connect();       
+   sleep(1);
+   var mycontroller = new MyDataController();
+   ws.Subscribe("data",mycontroller);
 
-  ws.Listen(); //Here you run you websocket server this blocks the simulation making loop as a server
-  ws.Close();
-  srv.Close();
+   runSim(ws);
+
+   ws.Close();
+
 }
 
 
@@ -48,7 +52,7 @@ proc main() {
   if EMIT {
     runWithEmissions();
   } else {
-    runSim();
+    //runSim();
   }
 }
 
@@ -57,10 +61,12 @@ record AgentDTO {
       y: real;
 }
 
-proc runSim() {
+proc runSim(ws:ChrestWebsocketClient) {
+  sleep(3);
   var sim = new Simulation(name="simulating amazing", epochs=EPOCHS);
   sim.world = new World(width=WORLD_WIDTH, height=WORLD_HEIGHT);
   for i in 1..N_RABBITS {
+    
     const randx = rand(a=0, b=WORLD_WIDTH),
           randy = rand(a=0, b=WORLD_HEIGHT);
     var ifs:[1..0] Sensor,
@@ -73,12 +79,22 @@ proc runSim() {
       , position=new Position(randx, randy));
     sim.add(a);
   }
+  var i=0;
   for x in sim.run() {
-    writeln(x);
+    //writeln(x);
     var ad = new AgentDTO(x=x.position.x, y= x.position.y);
     //Use the function chrestPubSubPublish(channel:string,obj) to send obj parameter as json to the clients.
-    chrestPubSubPublish("data",ad); //Here you are sending data to the websocket channel "data" queue that will send them to the websocket clients.
+    //chrestPubSubPublish("data",ad); //Here you are sending data to the websocket channel "data" queue that will send them to the websocket clients.
+      //if(i%100==0){
+          
+            //ws.Publish("data",ad);
+            sleep(100, TimeUnits.milliseconds);
+        
+      //}
+       
+       i+=1;
 
+    
   }
 }
 

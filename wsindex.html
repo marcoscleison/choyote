@@ -155,8 +155,6 @@
   <h1>WEBSOCKETS ON A PLANE!!</h1>
   <div id="stage"></div>
 
-
-
   <script>
     var svg = d3.select("#stage").append("svg:svg");
     svg.attr('width', 800).attr('height', 500);
@@ -176,6 +174,10 @@
           //here you will need to get the data and plot it or draw it. Using d3js.
           //Every time that the data arrives in client, this function is called.
           console.log("Receving from server ", data[index]);
+          var obj=data[index]
+          road_runner.attr('cx', obj.x);
+          road_runner.attr('cy', obj.y);
+
         }
 
       });
