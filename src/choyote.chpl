@@ -1,6 +1,4 @@
- use ChrestWebsockets;
-  
-    ChrestWebsocketsClient,
+ use ChrestWebsocketsClient,
     ChrestUtils,
     Random,
     NumSuch,
